@@ -22,19 +22,18 @@ export default function App() {
  
 
   async function handleLikeRepository(id) {
-    const repos = repositories.filter(repository => repository.id !== id)
+    const repo = repositories.findIndex(repository => repository.id == id);
 
-    api.post(`/repositories/${id}/like`).then(response => (
-      setRepositories([...repos, response.data])
-    ));
-    
+    api.post(`/repositories/${id}/like`).then(response => {
+      repositories[repo] = response.data;
+      setRepositories([...repositories]);
+    });
   }
 
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
       <SafeAreaView style={styles.container}>
-
         <FlatList
           data={repositories}
           keyExtractor={repository => repository.id}
@@ -57,7 +56,7 @@ export default function App() {
                   // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
                   testID={`repository-likes-${item.id}`}
                 >
-                  {item.likes} { item.likes < 2 ? 'curtida' : 'curtidas' }
+                  {item.likes} {item.likes < 2 ? 'curtida' : 'curtidas'}
                 </Text>
               </View>
 
@@ -73,7 +72,6 @@ export default function App() {
 
           )}
         />
-
       </SafeAreaView>
     </>
   );
